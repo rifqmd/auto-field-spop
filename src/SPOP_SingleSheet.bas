@@ -1,15 +1,14 @@
-Attribute VB_Name = "Module_SPOP_MultiSheet"
-Sub SPOP_MultiSheet()
+Attribute VB_Name = "Module_SPOP_SingleSheet"
+Sub SPOP_SingleSheet()
     Dim wsData As Worksheet
-    Dim wsTemplate1 As Worksheet, wsTemplate2 As Worksheet
+    Dim wsTemplate1 As Worksheet
     Dim lastRow As Long
     Dim i As Long, j As Long
-    Dim dataCluster As String, dataBlok As String, dataKelurahan As String, dataLuasTanah As String, dataLuasBangunan As String, dataNama As String, dataJumlahLantai As String
+    Dim alamatOP As String, dataBlok As String, dataKelurahan As String, dataLuasTanah As String
     
     ' Set worksheet
     Set wsData = ThisWorkbook.Sheets("Data")
     Set wsTemplate1 = ThisWorkbook.Sheets("SPOP (1)")
-    Set wsTemplate2 = ThisWorkbook.Sheets("LSPOP")
     
     ' Cari baris terakhir di sheet Data
     lastRow = wsData.Cells(wsData.Rows.Count, "A").End(xlUp).Row
@@ -20,26 +19,18 @@ Sub SPOP_MultiSheet()
         wsTemplate1.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
         Dim newSheet1 As Worksheet
         Set newSheet1 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
-        newSheet1.Name = "SPOP1_" & i - 1
-        
-        wsTemplate2.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
-        Dim newSheet2 As Worksheet
-        Set newSheet2 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
-        newSheet2.Name = "LSPOP_" & i - 1
+        newSheet1.Name = "SPOP1_" & i - 1 ' Nama sheet SPOP1_1, SPOP1_2, dst.
         
         ' Ambil data dari tabel
         dataNama = CStr(wsData.Cells(i, 2).Value)
-        dataCluster = CStr(wsData.Cells(i, 3).Value)
+        alamatOP = CStr(wsData.Cells(i, 3).Value)
         dataBlok = CStr(wsData.Cells(i, 4).Value)
         dataKelurahan = CStr(wsData.Cells(i, 7).Value)
         dataLuasTanah = CStr(wsData.Cells(i, 5).Value)
-        dataLuasBangunan = CStr(wsData.Cells(i, 6).Value)
-        dataJumlahLantai = CStr(wsData.Cells(i, 8).Value)
         
         ' ===== ISI DATA UNTUK SPOP (1) =====
-        ' Isi NAMA JALAN (Cluster) per karakter di B29, C29, D29, dst.
-        For j = 1 To Len(dataCluster)
-            newSheet1.Cells(29, 2 + j - 1).Value = Mid(dataCluster, j, 
+        For j = 1 To Len(alamatOP)
+            newSheet1.Cells(29, 2 + j - 1).Value = Mid(alamatOP, j, 1)
         Next j
         
         For j = 1 To Len(dataBlok)
@@ -54,15 +45,7 @@ Sub SPOP_MultiSheet()
             newSheet1.Cells(60, 10 + j - 1).Value = Mid(dataLuasTanah, j, 1) ' J = Kolom 10
         Next j
         
-        ' ===== ISI DATA UNTUK LSPOP =====
-        For j = 1 To Len(dataLuasBangunan)
-            newSheet2.Cells(32, 12 + j - 1).Value = Mid(dataLuasBangunan, j, 1)
-        Next j
-        
-        For j = 1 To Len(dataJumlahLantai)
-            newSheet2.Cells(32, 37 + j - 1).Value = Mid(dataJumlahLantai, j, 1)
-        Next j
     Next i
     
-    MsgBox "Proses selesai! " & (lastRow - 1) & " SPOP dan LSPOP telah dibuat.", vbInformation
+    MsgBox "Proses selesai! " & (lastRow - 1) & " SPOP telah dibuat.", vbInformation
 End Sub
