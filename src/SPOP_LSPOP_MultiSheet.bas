@@ -1,10 +1,12 @@
-Attribute VB_Name = "Module_SPOP_LSPOP_MultiSheet"
-Sub SPOP_LSPOP_MultiSheet()
+' Version: 1.3
+Attribute VB_Name = "Module_SPOP_MultiSheet"
+Sub SPOP_MultiSheet()
     Dim wsData As Worksheet
     Dim wsTemplate1 As Worksheet, wsTemplate2 As Worksheet
     Dim lastRow As Long
     Dim i As Long, j As Long
-    Dim dataCluster As String, dataBlok As String, dataKelurahan As String, dataLuasTanah As String, dataLuasBangunan As String, dataNama As String, dataJumlahLantai As String
+    Dim dataCluster As String, dataBlok As String, dataKelurahan As String, dataLuasTanah As String, dataLuasBangunan As String
+    Dim dataNama As String, dataJumlahLantai As String
     
     ' Set worksheet
     Set wsData = ThisWorkbook.Sheets("Data")
@@ -22,17 +24,18 @@ Sub SPOP_LSPOP_MultiSheet()
         Set newSheet1 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
         newSheet1.Name = "SPOP1_" & i - 1 ' Nama sheet SPOP1_1, SPOP1_2, dst.
         
+        ' Salin template SPOP (2) ke sheet baru
         wsTemplate2.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
         Dim newSheet2 As Worksheet
         Set newSheet2 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
         newSheet2.Name = "LSPOP_" & i - 1
         
         ' Ambil data dari tabel
-        dataNama = CStr(wsData.Cells(i, 2).Value)
-        dataCluster = CStr(wsData.Cells(i, 3).Value)
-        dataBlok = CStr(wsData.Cells(i, 4).Value)
-        dataKelurahan = CStr(wsData.Cells(i, 7).Value)
-        dataLuasTanah = CStr(wsData.Cells(i, 5).Value)
+        dataNama = CStr(wsData.Cells(i, 2).Value)      ' Kolom "Nama"
+        dataCluster = CStr(wsData.Cells(i, 3).Value)   ' Kolom "Cluster" (Nama Jalan)
+        dataBlok = CStr(wsData.Cells(i, 4).Value)      ' Kolom "Blok"
+        dataKelurahan = CStr(wsData.Cells(i, 7).Value) ' Kolom "Kelurahan"
+        dataLuasTanah = CStr(wsData.Cells(i, 5).Value) ' Kolom "Luas Tanah"
         dataLuasBangunan = CStr(wsData.Cells(i, 6).Value)
         dataJumlahLantai = CStr(wsData.Cells(i, 8).Value)
         
@@ -42,14 +45,17 @@ Sub SPOP_LSPOP_MultiSheet()
             newSheet1.Cells(29, 2 + j - 1).Value = Mid(dataCluster, j, 1)
         Next j
         
+        ' Isi BLOK per karakter di AF29, AG29, AH29, dst.
         For j = 1 To Len(dataBlok)
-            newSheet1.Cells(29, 32 + j - 1).Value = Mid(dataBlok, j, 1)
+            newSheet1.Cells(29, 32 + j - 1).Value = Mid(dataBlok, j, 1) ' AF = Kolom 32
         Next j
         
+        ' Isi KELURAHAN per karakter di B33, C33, D33, dst.
         For j = 1 To Len(dataKelurahan)
             newSheet1.Cells(33, 2 + j - 1).Value = Mid(dataKelurahan, j, 1)
         Next j
         
+        ' Isi LUAS TANAH per karakter di J60, K60, L60, dst.
         For j = 1 To Len(dataLuasTanah)
             newSheet1.Cells(60, 10 + j - 1).Value = Mid(dataLuasTanah, j, 1) ' J = Kolom 10
         Next j
@@ -63,7 +69,7 @@ Sub SPOP_LSPOP_MultiSheet()
             newSheet2.Cells(32, 37 + j - 1).Value = Mid(dataJumlahLantai, j, 1)
         Next j
         
-        ' TANPA PEMISAH KARAKTER
+        ' === TANPA PEMISAH KARAKTER
         newSheet2.Range("AR1").Value = dataBlok
         
     Next i
