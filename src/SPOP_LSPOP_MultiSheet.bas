@@ -1,8 +1,8 @@
-' Version: 1.3
+' Version: 1.4
 Attribute VB_Name = "Module_SPOP_MultiSheet"
 Sub SPOP_MultiSheet()
     Dim wsData As Worksheet
-    Dim wsTemplate1 As Worksheet, wsTemplate2 As Worksheet
+    Dim wsTemplate1 As Worksheet, wsTemplate2, wsTemplate3 As Worksheet
     Dim lastRow As Long
     Dim i As Long, j As Long
     Dim dataCluster As String, dataBlok As String, dataKelurahan As String, dataLuasTanah As String, dataLuasBangunan As String
@@ -11,7 +11,8 @@ Sub SPOP_MultiSheet()
     ' Set worksheet
     Set wsData = ThisWorkbook.Sheets("Data")
     Set wsTemplate1 = ThisWorkbook.Sheets("SPOP (1)")
-    Set wsTemplate2 = ThisWorkbook.Sheets("LSPOP")
+    Set wsTemplate2 = ThisWorkbook.Sheets("SPOP (2)")
+    Set wsTemplate3 = ThisWorkbook.Sheets("LSPOP")
     
     ' Cari baris terakhir di sheet Data
     lastRow = wsData.Cells(wsData.Rows.Count, "A").End(xlUp).Row
@@ -28,7 +29,13 @@ Sub SPOP_MultiSheet()
         wsTemplate2.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
         Dim newSheet2 As Worksheet
         Set newSheet2 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
-        newSheet2.Name = "LSPOP_" & i - 1
+        newSheet2.Name = "SPOP2_" & i - 1
+        
+        ' Salin template LSPOP ke sheet baru
+        wsTemplate3.Copy After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
+        Dim newSheet3 As Worksheet
+        Set newSheet3 = ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count)
+        newSheet3.Name = "LSPOP_" & i - 1
         
         ' Ambil data dari tabel
         dataNama = CStr(wsData.Cells(i, 2).Value)      ' Kolom "Nama"
@@ -62,15 +69,15 @@ Sub SPOP_MultiSheet()
         
         ' ===== ISI DATA UNTUK LSPOP =====
         For j = 1 To Len(dataLuasBangunan)
-            newSheet2.Cells(32, 12 + j - 1).Value = Mid(dataLuasBangunan, j, 1)
+            newSheet3.Cells(32, 12 + j - 1).Value = Mid(dataLuasBangunan, j, 1)
         Next j
         
         For j = 1 To Len(dataJumlahLantai)
-            newSheet2.Cells(32, 37 + j - 1).Value = Mid(dataJumlahLantai, j, 1)
+            newSheet3.Cells(32, 37 + j - 1).Value = Mid(dataJumlahLantai, j, 1)
         Next j
         
         ' === TANPA PEMISAH KARAKTER
-        newSheet2.Range("AR1").Value = dataBlok
+        newSheet3.Range("AR1").Value = dataBlok
         
     Next i
     
